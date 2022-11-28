@@ -1,0 +1,314 @@
+
+I2C.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001c4  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .stab         000006f0  00000000  00000000  00000218  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  2 .stabstr      00000918  00000000  00000000  00000908  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 cc 00 	call	0x198	; 0x198 <main>
+  64:	0c 94 e0 00 	jmp	0x1c0	; 0x1c0 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <MTWI_voidMasterInit>:
+#include "TWI_interface.h"
+#include "TWI_private.h"
+#include "TWI_config.h"
+
+void MTWI_voidMasterInit (void)
+{
+  6c:	df 93       	push	r29
+  6e:	cf 93       	push	r28
+  70:	cd b7       	in	r28, 0x3d	; 61
+  72:	de b7       	in	r29, 0x3e	; 62
+    TWBR = 0x47;
+  74:	e0 e2       	ldi	r30, 0x20	; 32
+  76:	f0 e0       	ldi	r31, 0x00	; 0
+  78:	87 e4       	ldi	r24, 0x47	; 71
+  7a:	80 83       	st	Z, r24
+    TWCR = (1 << TWEN);
+  7c:	e6 e5       	ldi	r30, 0x56	; 86
+  7e:	f0 e0       	ldi	r31, 0x00	; 0
+  80:	84 e0       	ldi	r24, 0x04	; 4
+  82:	80 83       	st	Z, r24
+}
+  84:	cf 91       	pop	r28
+  86:	df 91       	pop	r29
+  88:	08 95       	ret
+
+0000008a <MTWI_voidMasterStart>:
+void MTWI_voidMasterStart (void)
+{
+  8a:	df 93       	push	r29
+  8c:	cf 93       	push	r28
+  8e:	cd b7       	in	r28, 0x3d	; 61
+  90:	de b7       	in	r29, 0x3e	; 62
+    TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);
+  92:	e6 e5       	ldi	r30, 0x56	; 86
+  94:	f0 e0       	ldi	r31, 0x00	; 0
+  96:	84 ea       	ldi	r24, 0xA4	; 164
+  98:	80 83       	st	Z, r24
+    while(!(TWCR & (1 << TWINT)));
+  9a:	e6 e5       	ldi	r30, 0x56	; 86
+  9c:	f0 e0       	ldi	r31, 0x00	; 0
+  9e:	80 81       	ld	r24, Z
+  a0:	88 23       	and	r24, r24
+  a2:	dc f7       	brge	.-10     	; 0x9a <MTWI_voidMasterStart+0x10>
+    //while(GET_BIT(TWCR,TWINT) == 0);
+}
+  a4:	cf 91       	pop	r28
+  a6:	df 91       	pop	r29
+  a8:	08 95       	ret
+
+000000aa <MTWI_voidMasterTransmit>:
+void MTWI_voidMasterTransmit (u8 data)
+{
+  aa:	df 93       	push	r29
+  ac:	cf 93       	push	r28
+  ae:	0f 92       	push	r0
+  b0:	cd b7       	in	r28, 0x3d	; 61
+  b2:	de b7       	in	r29, 0x3e	; 62
+  b4:	89 83       	std	Y+1, r24	; 0x01
+    TWDR = data;
+  b6:	e3 e2       	ldi	r30, 0x23	; 35
+  b8:	f0 e0       	ldi	r31, 0x00	; 0
+  ba:	89 81       	ldd	r24, Y+1	; 0x01
+  bc:	80 83       	st	Z, r24
+    TWCR = (1 << TWINT) | (1 << TWEN);
+  be:	e6 e5       	ldi	r30, 0x56	; 86
+  c0:	f0 e0       	ldi	r31, 0x00	; 0
+  c2:	84 e8       	ldi	r24, 0x84	; 132
+  c4:	80 83       	st	Z, r24
+    while(!(TWCR & (1 << TWINT)));
+  c6:	e6 e5       	ldi	r30, 0x56	; 86
+  c8:	f0 e0       	ldi	r31, 0x00	; 0
+  ca:	80 81       	ld	r24, Z
+  cc:	88 23       	and	r24, r24
+  ce:	dc f7       	brge	.-10     	; 0xc6 <MTWI_voidMasterTransmit+0x1c>
+}
+  d0:	0f 90       	pop	r0
+  d2:	cf 91       	pop	r28
+  d4:	df 91       	pop	r29
+  d6:	08 95       	ret
+
+000000d8 <MTWI_u8MasterReceive>:
+u8   MTWI_u8MasterReceive (void)
+{
+  d8:	df 93       	push	r29
+  da:	cf 93       	push	r28
+  dc:	cd b7       	in	r28, 0x3d	; 61
+  de:	de b7       	in	r29, 0x3e	; 62
+    while(!(TWCR & (1 << TWINT)));
+  e0:	e6 e5       	ldi	r30, 0x56	; 86
+  e2:	f0 e0       	ldi	r31, 0x00	; 0
+  e4:	80 81       	ld	r24, Z
+  e6:	88 23       	and	r24, r24
+  e8:	dc f7       	brge	.-10     	; 0xe0 <MTWI_u8MasterReceive+0x8>
+    return TWDR;
+  ea:	e3 e2       	ldi	r30, 0x23	; 35
+  ec:	f0 e0       	ldi	r31, 0x00	; 0
+  ee:	80 81       	ld	r24, Z
+}
+  f0:	cf 91       	pop	r28
+  f2:	df 91       	pop	r29
+  f4:	08 95       	ret
+
+000000f6 <MTWI_voidMasterStop>:
+void MTWI_voidMasterStop (void)
+{
+  f6:	df 93       	push	r29
+  f8:	cf 93       	push	r28
+  fa:	cd b7       	in	r28, 0x3d	; 61
+  fc:	de b7       	in	r29, 0x3e	; 62
+    TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
+  fe:	e6 e5       	ldi	r30, 0x56	; 86
+ 100:	f0 e0       	ldi	r31, 0x00	; 0
+ 102:	84 e9       	ldi	r24, 0x94	; 148
+ 104:	80 83       	st	Z, r24
+}
+ 106:	cf 91       	pop	r28
+ 108:	df 91       	pop	r29
+ 10a:	08 95       	ret
+
+0000010c <MTWI_voidSlaveInit>:
+
+void MTWI_voidSlaveInit (u8 address)
+{
+ 10c:	df 93       	push	r29
+ 10e:	cf 93       	push	r28
+ 110:	0f 92       	push	r0
+ 112:	cd b7       	in	r28, 0x3d	; 61
+ 114:	de b7       	in	r29, 0x3e	; 62
+ 116:	89 83       	std	Y+1, r24	; 0x01
+    TWCR = (1 << TWEN);
+ 118:	e6 e5       	ldi	r30, 0x56	; 86
+ 11a:	f0 e0       	ldi	r31, 0x00	; 0
+ 11c:	84 e0       	ldi	r24, 0x04	; 4
+ 11e:	80 83       	st	Z, r24
+    TWAR = address;
+ 120:	e2 e2       	ldi	r30, 0x22	; 34
+ 122:	f0 e0       	ldi	r31, 0x00	; 0
+ 124:	89 81       	ldd	r24, Y+1	; 0x01
+ 126:	80 83       	st	Z, r24
+}
+ 128:	0f 90       	pop	r0
+ 12a:	cf 91       	pop	r28
+ 12c:	df 91       	pop	r29
+ 12e:	08 95       	ret
+
+00000130 <MTWI_voidListen>:
+
+void MTWI_voidListen(void)
+{
+ 130:	df 93       	push	r29
+ 132:	cf 93       	push	r28
+ 134:	cd b7       	in	r28, 0x3d	; 61
+ 136:	de b7       	in	r29, 0x3e	; 62
+
+    while(!(TWCR & (1 << TWINT)));
+ 138:	e6 e5       	ldi	r30, 0x56	; 86
+ 13a:	f0 e0       	ldi	r31, 0x00	; 0
+ 13c:	80 81       	ld	r24, Z
+ 13e:	88 23       	and	r24, r24
+ 140:	dc f7       	brge	.-10     	; 0x138 <MTWI_voidListen+0x8>
+}
+ 142:	cf 91       	pop	r28
+ 144:	df 91       	pop	r29
+ 146:	08 95       	ret
+
+00000148 <MTWI_voidSlaveTransmit>:
+void MTWI_voidSlaveTransmit(u8 data)
+{
+ 148:	df 93       	push	r29
+ 14a:	cf 93       	push	r28
+ 14c:	0f 92       	push	r0
+ 14e:	cd b7       	in	r28, 0x3d	; 61
+ 150:	de b7       	in	r29, 0x3e	; 62
+ 152:	89 83       	std	Y+1, r24	; 0x01
+    TWDR = data;
+ 154:	e3 e2       	ldi	r30, 0x23	; 35
+ 156:	f0 e0       	ldi	r31, 0x00	; 0
+ 158:	89 81       	ldd	r24, Y+1	; 0x01
+ 15a:	80 83       	st	Z, r24
+    TWCR = (1 << TWEN);
+ 15c:	e6 e5       	ldi	r30, 0x56	; 86
+ 15e:	f0 e0       	ldi	r31, 0x00	; 0
+ 160:	84 e0       	ldi	r24, 0x04	; 4
+ 162:	80 83       	st	Z, r24
+    while(!(TWCR & (1 << TWINT)));
+ 164:	e6 e5       	ldi	r30, 0x56	; 86
+ 166:	f0 e0       	ldi	r31, 0x00	; 0
+ 168:	80 81       	ld	r24, Z
+ 16a:	88 23       	and	r24, r24
+ 16c:	dc f7       	brge	.-10     	; 0x164 <MTWI_voidSlaveTransmit+0x1c>
+}
+ 16e:	0f 90       	pop	r0
+ 170:	cf 91       	pop	r28
+ 172:	df 91       	pop	r29
+ 174:	08 95       	ret
+
+00000176 <MTWI_u8SlaveReceive>:
+u8   MTWI_u8SlaveReceive (void)
+{
+ 176:	df 93       	push	r29
+ 178:	cf 93       	push	r28
+ 17a:	cd b7       	in	r28, 0x3d	; 61
+ 17c:	de b7       	in	r29, 0x3e	; 62
+	TWCR =TWCR &~(1<<TWINT);
+ 17e:	a6 e5       	ldi	r26, 0x56	; 86
+ 180:	b0 e0       	ldi	r27, 0x00	; 0
+ 182:	e6 e5       	ldi	r30, 0x56	; 86
+ 184:	f0 e0       	ldi	r31, 0x00	; 0
+ 186:	80 81       	ld	r24, Z
+ 188:	8f 77       	andi	r24, 0x7F	; 127
+ 18a:	8c 93       	st	X, r24
+	//TWCR &=~(1<<6);
+	//TWCR|= (1<<TWINT);
+
+   //while(!(TWCR & (1 << TWINT)));
+    return TWDR;
+ 18c:	e3 e2       	ldi	r30, 0x23	; 35
+ 18e:	f0 e0       	ldi	r31, 0x00	; 0
+ 190:	80 81       	ld	r24, Z
+}
+ 192:	cf 91       	pop	r28
+ 194:	df 91       	pop	r29
+ 196:	08 95       	ret
+
+00000198 <main>:
+#include "TWI_interface.h"
+#include "TWI_private.h"
+#include "TWI_config.h"
+#include<avr/io.h>
+void main(void)
+{
+ 198:	0f 93       	push	r16
+ 19a:	1f 93       	push	r17
+ 19c:	df 93       	push	r29
+ 19e:	cf 93       	push	r28
+ 1a0:	cd b7       	in	r28, 0x3d	; 61
+ 1a2:	de b7       	in	r29, 0x3e	; 62
+DDRD=0xFF;
+ 1a4:	e1 e3       	ldi	r30, 0x31	; 49
+ 1a6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a8:	8f ef       	ldi	r24, 0xFF	; 255
+ 1aa:	80 83       	st	Z, r24
+MTWI_voidSlaveInit(0b10101010);
+ 1ac:	8a ea       	ldi	r24, 0xAA	; 170
+ 1ae:	0e 94 86 00 	call	0x10c	; 0x10c <MTWI_voidSlaveInit>
+
+while (1)
+{
+	//MTWI_voidListen();
+
+PORTD=MTWI_u8SlaveReceive();
+ 1b2:	02 e3       	ldi	r16, 0x32	; 50
+ 1b4:	10 e0       	ldi	r17, 0x00	; 0
+ 1b6:	0e 94 bb 00 	call	0x176	; 0x176 <MTWI_u8SlaveReceive>
+ 1ba:	f8 01       	movw	r30, r16
+ 1bc:	80 83       	st	Z, r24
+ 1be:	f9 cf       	rjmp	.-14     	; 0x1b2 <main+0x1a>
+
+000001c0 <_exit>:
+ 1c0:	f8 94       	cli
+
+000001c2 <__stop_program>:
+ 1c2:	ff cf       	rjmp	.-2      	; 0x1c2 <__stop_program>

@@ -1,0 +1,342 @@
+
+SPI.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001f4  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .stab         00000828  00000000  00000000  00000248  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  2 .stabstr      0000095a  00000000  00000000  00000a70  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 e3 00 	call	0x1c6	; 0x1c6 <main>
+  64:	0c 94 f8 00 	jmp	0x1f0	; 0x1f0 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <ADC_Init>:
+#include "ATMEGA32_REGISTERS.h"
+#include "ADC.h"
+
+
+void ADC_Init (void)    // ADC Initialization And Enable
+{
+  6c:	df 93       	push	r29
+  6e:	cf 93       	push	r28
+  70:	cd b7       	in	r28, 0x3d	; 61
+  72:	de b7       	in	r29, 0x3e	; 62
+	// ADC Enable
+	ADCSRA_REG.Bits.BIT_7 = 1;
+  74:	e6 e2       	ldi	r30, 0x26	; 38
+  76:	f0 e0       	ldi	r31, 0x00	; 0
+  78:	80 81       	ld	r24, Z
+  7a:	80 68       	ori	r24, 0x80	; 128
+  7c:	80 83       	st	Z, r24
+
+	// Pre-scaler Configuration as 128
+	ADCSRA_REG.Bits.BIT_0=1;
+  7e:	e6 e2       	ldi	r30, 0x26	; 38
+  80:	f0 e0       	ldi	r31, 0x00	; 0
+  82:	80 81       	ld	r24, Z
+  84:	81 60       	ori	r24, 0x01	; 1
+  86:	80 83       	st	Z, r24
+	ADCSRA_REG.Bits.BIT_1=1;
+  88:	e6 e2       	ldi	r30, 0x26	; 38
+  8a:	f0 e0       	ldi	r31, 0x00	; 0
+  8c:	80 81       	ld	r24, Z
+  8e:	82 60       	ori	r24, 0x02	; 2
+  90:	80 83       	st	Z, r24
+	ADCSRA_REG.Bits.BIT_2=1;
+  92:	e6 e2       	ldi	r30, 0x26	; 38
+  94:	f0 e0       	ldi	r31, 0x00	; 0
+  96:	80 81       	ld	r24, Z
+  98:	84 60       	ori	r24, 0x04	; 4
+  9a:	80 83       	st	Z, r24
+
+	// Reference Voltage as AVCC with external capacitor
+	ADMUX_REG.Bits.BIT_7=0;
+  9c:	e7 e2       	ldi	r30, 0x27	; 39
+  9e:	f0 e0       	ldi	r31, 0x00	; 0
+  a0:	80 81       	ld	r24, Z
+  a2:	8f 77       	andi	r24, 0x7F	; 127
+  a4:	80 83       	st	Z, r24
+	ADMUX_REG.Bits.BIT_6=0;
+  a6:	e7 e2       	ldi	r30, 0x27	; 39
+  a8:	f0 e0       	ldi	r31, 0x00	; 0
+  aa:	80 81       	ld	r24, Z
+  ac:	8f 7b       	andi	r24, 0xBF	; 191
+  ae:	80 83       	st	Z, r24
+
+	// ADC Data Right Adjustment
+	ADMUX_REG.Bits.BIT_5=0;
+  b0:	e7 e2       	ldi	r30, 0x27	; 39
+  b2:	f0 e0       	ldi	r31, 0x00	; 0
+  b4:	80 81       	ld	r24, Z
+  b6:	8f 7d       	andi	r24, 0xDF	; 223
+  b8:	80 83       	st	Z, r24
+
+}
+  ba:	cf 91       	pop	r28
+  bc:	df 91       	pop	r29
+  be:	08 95       	ret
+
+000000c0 <ADC_Read>:
+u16 ADC_Read (u8 channel)     // Read From The ADC Channel
+{
+  c0:	df 93       	push	r29
+  c2:	cf 93       	push	r28
+  c4:	00 d0       	rcall	.+0      	; 0xc6 <ADC_Read+0x6>
+  c6:	0f 92       	push	r0
+  c8:	cd b7       	in	r28, 0x3d	; 61
+  ca:	de b7       	in	r29, 0x3e	; 62
+  cc:	8b 83       	std	Y+3, r24	; 0x03
+	u16 Local_Result;
+	// ADC Channel Selection
+	ADMUX_REG.Whole_Regester &= ADC_ADMUX_CHANNEL_CLEAR_MASK;
+  ce:	a7 e2       	ldi	r26, 0x27	; 39
+  d0:	b0 e0       	ldi	r27, 0x00	; 0
+  d2:	e7 e2       	ldi	r30, 0x27	; 39
+  d4:	f0 e0       	ldi	r31, 0x00	; 0
+  d6:	80 81       	ld	r24, Z
+  d8:	80 7f       	andi	r24, 0xF0	; 240
+  da:	8c 93       	st	X, r24
+	ADMUX_REG.Whole_Regester |= channel;
+  dc:	a7 e2       	ldi	r26, 0x27	; 39
+  de:	b0 e0       	ldi	r27, 0x00	; 0
+  e0:	e7 e2       	ldi	r30, 0x27	; 39
+  e2:	f0 e0       	ldi	r31, 0x00	; 0
+  e4:	90 81       	ld	r25, Z
+  e6:	8b 81       	ldd	r24, Y+3	; 0x03
+  e8:	89 2b       	or	r24, r25
+  ea:	8c 93       	st	X, r24
+
+	// Start Single Conversion
+	ADCSRA_REG.Bits.BIT_6=1;
+  ec:	e6 e2       	ldi	r30, 0x26	; 38
+  ee:	f0 e0       	ldi	r31, 0x00	; 0
+  f0:	80 81       	ld	r24, Z
+  f2:	80 64       	ori	r24, 0x40	; 64
+  f4:	80 83       	st	Z, r24
+
+	//wait for the conversion
+	while((ADCSRA_REG.Bits.BIT_6));
+  f6:	e6 e2       	ldi	r30, 0x26	; 38
+  f8:	f0 e0       	ldi	r31, 0x00	; 0
+  fa:	80 81       	ld	r24, Z
+  fc:	80 74       	andi	r24, 0x40	; 64
+  fe:	88 23       	and	r24, r24
+ 100:	d1 f7       	brne	.-12     	; 0xf6 <ADC_Read+0x36>
+
+	Local_Result = ADCL_REG.Whole_Regester;
+ 102:	e4 e2       	ldi	r30, 0x24	; 36
+ 104:	f0 e0       	ldi	r31, 0x00	; 0
+ 106:	80 81       	ld	r24, Z
+ 108:	88 2f       	mov	r24, r24
+ 10a:	90 e0       	ldi	r25, 0x00	; 0
+ 10c:	9a 83       	std	Y+2, r25	; 0x02
+ 10e:	89 83       	std	Y+1, r24	; 0x01
+	Local_Result |=(((u16)ADCH_REG.Whole_Regester)<<8);
+ 110:	e5 e2       	ldi	r30, 0x25	; 37
+ 112:	f0 e0       	ldi	r31, 0x00	; 0
+ 114:	80 81       	ld	r24, Z
+ 116:	88 2f       	mov	r24, r24
+ 118:	90 e0       	ldi	r25, 0x00	; 0
+ 11a:	38 2f       	mov	r19, r24
+ 11c:	22 27       	eor	r18, r18
+ 11e:	89 81       	ldd	r24, Y+1	; 0x01
+ 120:	9a 81       	ldd	r25, Y+2	; 0x02
+ 122:	82 2b       	or	r24, r18
+ 124:	93 2b       	or	r25, r19
+ 126:	9a 83       	std	Y+2, r25	; 0x02
+ 128:	89 83       	std	Y+1, r24	; 0x01
+
+	return Local_Result;
+ 12a:	89 81       	ldd	r24, Y+1	; 0x01
+ 12c:	9a 81       	ldd	r25, Y+2	; 0x02
+}
+ 12e:	0f 90       	pop	r0
+ 130:	0f 90       	pop	r0
+ 132:	0f 90       	pop	r0
+ 134:	cf 91       	pop	r28
+ 136:	df 91       	pop	r29
+ 138:	08 95       	ret
+
+0000013a <SPI_vidMasterInit>:
+#include "types.h"
+#include "SPI_interface.h"
+#include "SPI_private.h"
+#include<avr/io.h>
+void SPI_vidMasterInit (void)
+{
+ 13a:	df 93       	push	r29
+ 13c:	cf 93       	push	r28
+ 13e:	cd b7       	in	r28, 0x3d	; 61
+ 140:	de b7       	in	r29, 0x3e	; 62
+    DDRB = (1 << MOSI) | (1 << SCK) | (1 << SS);
+ 142:	e7 e3       	ldi	r30, 0x37	; 55
+ 144:	f0 e0       	ldi	r31, 0x00	; 0
+ 146:	80 eb       	ldi	r24, 0xB0	; 176
+ 148:	80 83       	st	Z, r24
+    PORTB &= ~(1 << SS);
+ 14a:	a8 e3       	ldi	r26, 0x38	; 56
+ 14c:	b0 e0       	ldi	r27, 0x00	; 0
+ 14e:	e8 e3       	ldi	r30, 0x38	; 56
+ 150:	f0 e0       	ldi	r31, 0x00	; 0
+ 152:	80 81       	ld	r24, Z
+ 154:	8f 7e       	andi	r24, 0xEF	; 239
+ 156:	8c 93       	st	X, r24
+    SPCR = (1 << SPE) | (1 << MSTR);
+ 158:	ed e2       	ldi	r30, 0x2D	; 45
+ 15a:	f0 e0       	ldi	r31, 0x00	; 0
+ 15c:	80 e5       	ldi	r24, 0x50	; 80
+ 15e:	80 83       	st	Z, r24
+}
+ 160:	cf 91       	pop	r28
+ 162:	df 91       	pop	r29
+ 164:	08 95       	ret
+
+00000166 <SPI_vidSlaveInit>:
+void SPI_vidSlaveInit (void)
+{
+ 166:	df 93       	push	r29
+ 168:	cf 93       	push	r28
+ 16a:	cd b7       	in	r28, 0x3d	; 61
+ 16c:	de b7       	in	r29, 0x3e	; 62
+    DDRB = (1 << MISO);
+ 16e:	e7 e3       	ldi	r30, 0x37	; 55
+ 170:	f0 e0       	ldi	r31, 0x00	; 0
+ 172:	80 e4       	ldi	r24, 0x40	; 64
+ 174:	80 83       	st	Z, r24
+    SPCR = (1 << SPE);
+ 176:	ed e2       	ldi	r30, 0x2D	; 45
+ 178:	f0 e0       	ldi	r31, 0x00	; 0
+ 17a:	80 e4       	ldi	r24, 0x40	; 64
+ 17c:	80 83       	st	Z, r24
+}
+ 17e:	cf 91       	pop	r28
+ 180:	df 91       	pop	r29
+ 182:	08 95       	ret
+
+00000184 <SPI_vidTransfer>:
+
+void SPI_vidTransfer (u8 data)
+{
+ 184:	df 93       	push	r29
+ 186:	cf 93       	push	r28
+ 188:	00 d0       	rcall	.+0      	; 0x18a <SPI_vidTransfer+0x6>
+ 18a:	cd b7       	in	r28, 0x3d	; 61
+ 18c:	de b7       	in	r29, 0x3e	; 62
+ 18e:	89 83       	std	Y+1, r24	; 0x01
+    SPDR = data;
+ 190:	ef e2       	ldi	r30, 0x2F	; 47
+ 192:	f0 e0       	ldi	r31, 0x00	; 0
+ 194:	89 81       	ldd	r24, Y+1	; 0x01
+ 196:	80 83       	st	Z, r24
+    while(SPSR & (1 << SPIF) == 0);
+ 198:	ee e2       	ldi	r30, 0x2E	; 46
+ 19a:	f0 e0       	ldi	r31, 0x00	; 0
+ 19c:	80 81       	ld	r24, Z
+}
+ 19e:	0f 90       	pop	r0
+ 1a0:	0f 90       	pop	r0
+ 1a2:	cf 91       	pop	r28
+ 1a4:	df 91       	pop	r29
+ 1a6:	08 95       	ret
+
+000001a8 <SPI_u8Recieve>:
+u8 SPI_u8Recieve (void)
+{
+ 1a8:	df 93       	push	r29
+ 1aa:	cf 93       	push	r28
+ 1ac:	0f 92       	push	r0
+ 1ae:	cd b7       	in	r28, 0x3d	; 61
+ 1b0:	de b7       	in	r29, 0x3e	; 62
+    while(SPSR & (1 << SPIF) == 0);
+ 1b2:	ee e2       	ldi	r30, 0x2E	; 46
+ 1b4:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b6:	80 81       	ld	r24, Z
+    return SPDR;
+ 1b8:	ef e2       	ldi	r30, 0x2F	; 47
+ 1ba:	f0 e0       	ldi	r31, 0x00	; 0
+ 1bc:	80 81       	ld	r24, Z
+}
+ 1be:	0f 90       	pop	r0
+ 1c0:	cf 91       	pop	r28
+ 1c2:	df 91       	pop	r29
+ 1c4:	08 95       	ret
+
+000001c6 <main>:
+#include "SPI_interface.h"
+#include "SPI_private.h"
+#include"ADC.h"
+#include<avr/io.h>
+int  main(void)
+{
+ 1c6:	df 93       	push	r29
+ 1c8:	cf 93       	push	r28
+ 1ca:	0f 92       	push	r0
+ 1cc:	cd b7       	in	r28, 0x3d	; 61
+ 1ce:	de b7       	in	r29, 0x3e	; 62
+	u8 DATA;
+		SPI_vidMasterInit();
+ 1d0:	0e 94 9d 00 	call	0x13a	; 0x13a <SPI_vidMasterInit>
+		ADC_Init();
+ 1d4:	0e 94 36 00 	call	0x6c	; 0x6c <ADC_Init>
+		PORTA=0x01;
+ 1d8:	eb e3       	ldi	r30, 0x3B	; 59
+ 1da:	f0 e0       	ldi	r31, 0x00	; 0
+ 1dc:	81 e0       	ldi	r24, 0x01	; 1
+ 1de:	80 83       	st	Z, r24
+
+		//DIO_vidSetPinVal(u8PORTA,DIO_u8PIN_0,DIO_u8HIGH);
+		while(1)
+		{
+			DATA=ADC_Read(ADC_ADMUX_CHANNEL_ADC0);
+ 1e0:	80 e0       	ldi	r24, 0x00	; 0
+ 1e2:	0e 94 60 00 	call	0xc0	; 0xc0 <ADC_Read>
+ 1e6:	89 83       	std	Y+1, r24	; 0x01
+
+			SPI_vidTransfer(DATA);
+ 1e8:	89 81       	ldd	r24, Y+1	; 0x01
+ 1ea:	0e 94 c2 00 	call	0x184	; 0x184 <SPI_vidTransfer>
+ 1ee:	f8 cf       	rjmp	.-16     	; 0x1e0 <main+0x1a>
+
+000001f0 <_exit>:
+ 1f0:	f8 94       	cli
+
+000001f2 <__stop_program>:
+ 1f2:	ff cf       	rjmp	.-2      	; 0x1f2 <__stop_program>
